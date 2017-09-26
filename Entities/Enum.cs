@@ -28,6 +28,12 @@ namespace GruppBZork.Entities
     {
         Poison,
         DoorKey,
+        LaserGun,
+        BodyArmour,
+        EvilRobotPeng,
+        SmokeBomb,
+        Cage,
+        DiscoBall
 
     }
 
