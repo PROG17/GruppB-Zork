@@ -54,6 +54,33 @@ namespace GruppBZork
             }
         }
 
+        /// <summary>DropItem(string userInput, Room currentRoom)       
+        /// Metoden används för att droppa ett objekt. 
+        /// Inparametrarna är här:
+        /// <param name="userInput"></param>
+        /// <param name="currentRoom"></param>
+        /// Ifall objeket finns i Player.inventory så flyttas objeketet från 
+        /// Player.inventory ===> currentRoom.itemList 
+        /// </summary>
+        public static void DropItem(string userInput, Room currentRoom)
+        {
+            foreach (var item in Player.inventory)
+            {
+                if (item.Name == userInput.ToUpper())
+                {
+                    Console.WriteLine($"You droped {item.Name}!");
+                    currentRoom.listOfItems.Add(item);
+                    Player.inventory.Remove(item);
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine($"There is no {userInput} in your inventory");
+                }
+
+            }
+        }
+
         static void Main(string[] args)
         {
             ///Ändrade namnen på testrummen och object för att lättare skilja på dem
@@ -69,26 +96,45 @@ namespace GruppBZork
             blueRoom.listOfItems.Add(new Item(name: "SOFA", description: "This is a test sofa", canBeTaken: false));
 
             //Exits
-            blueRoom.listOfExits.Add(new Exit(name: "REDDOOR", description: "This is a test door",locked:true) { room1 = blueRoom, room2 = redRoom });
+            blueRoom.listOfExits.Add(new Exit(name: "REDDOOR", description: "This is a test door", locked: true) { room1 = blueRoom, room2 = redRoom });
             redRoom.listOfExits.Add(new Exit(name: "BLUEDOOR", description: "This is a test door 2", locked: false) { room1 = blueRoom, room2 = redRoom });
 
 
 
-            currentRoom = blueRoom;
+            
 
             while (true)
             {
+                currentRoom = blueRoom;
                 currentRoom.DescribeRoom();
 
                 string input = Console.ReadLine().ToUpper();
 
                 if (input == "GO")
                 {
-                    Go(currentRoom.listOfExits[0]);                    
+                    Go(currentRoom.listOfExits[0]);
                 }
-                if (input == "KEY"||input == "SOFA")
+                if (input == "PICK KEY" || input == "PICK SOFA")///Testar PickUpItem och dropItem
                 {
-                    PickUpItem(input,currentRoom);
+                    if (input == "PICK KEY")
+                    { input = "KEY"; }
+                    else { input = "SOFA"; }
+
+                    foreach (var item in currentRoom.listOfItems)
+                    {
+                        if (item.Name == input)
+                        { PickUpItem(input, currentRoom); break; }
+                    }
+                }
+                if (input == "DROP KEY")    ///Testar DropIte´m
+                {
+                  input = "KEY"; 
+                    
+                    foreach (var item in Player.inventory)
+                    {
+                        if (item.Name == "KEY")
+                        { DropItem(input, currentRoom); break; }
+                    }
                 }
             }
         }
