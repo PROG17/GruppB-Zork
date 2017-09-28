@@ -6,24 +6,36 @@ using System.Threading.Tasks;
 
 namespace GruppBZork.Entities
 {
-    class Room : Container
-    {
-        public Dictionary<Direction, Room> exits = new Dictionary<Direction, Room>();
 
-        public Room(string Name, string Description) : base(Name, Description)
+    class Room : GameObject
+
+    {
+        public List<Exit> listOfExits = new List<Exit>();
+
+        public List<Item> listOfItems = new List<Item>();
+        public Room(string name, string description) : base(name, description)
         {
-            
+            Name = name;
+            Description = description;
         }
 
-        public void Describe()
+        public void DescribeRoom()
         {
-            string exitsText = string.Join(", ", exits.Keys.ToArray());
-            string contentsText = string.Join(", ", contents.Keys.ToArray());
-            if (string.IsNullOrEmpty(exitsText))
+            Console.WriteLine(Description);
+            Console.WriteLine("Here is a list of items in the room: ");
+
+            foreach (var item in listOfItems)
             {
-                exitsText = "None";
+                Console.WriteLine($"{item.Name}: {item.Description}");
+                Console.WriteLine();
             }
-            Console.WriteLine("{0}\n\n{1}\n\n{2}\n\nExits Are: {3}\n", Name, Description, contentsText, exitsText);
+
+            Console.WriteLine("Exits: ");
+            foreach (var exit in listOfExits)
+            {
+                Console.WriteLine($"{exit.Name}: {exit.Description}");
+
+            }
         }
     }
 }

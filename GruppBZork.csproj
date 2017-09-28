@@ -42,12 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Container.cs" />
-    <Compile Include="Entities\Enum.cs" />
+    <Compile Include="Entities\Exit.cs" />
     <Compile Include="Entities\Item.cs" />
-    <Compile Include="Entities\Key.cs" />
+    <Compile Include="Entities\Player.cs" />
     <Compile Include="Entities\Room.cs" />
-    <Compile Include="Entities\Thing.cs" />
+    <Compile Include="Entities\GameObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace GruppBZork.Entities
 {
-    class Key : Item
+    class Exit : GameObject
     {
-        public Key(string Name, string Description) : base(Name, Description)
+        public Exit(string name, string description) : base(name, description)
         {
+            Name = name;
+            Description = description;
         }
     }
 }
+

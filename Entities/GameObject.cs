@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace GruppBZork.Entities
 {
-    abstract class Container
+    abstract class GameObject
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public Dictionary<IN, Thing> contents = new Dictionary<IN, Thing>();
 
-        public Container(string Name, string Description)
+        public GameObject(string name, string description)
         {
-            this.Name = Name;
-            this.Description = Description;
+            this.Name = name;
+            this.Description = description;
         }
-
     }
 }

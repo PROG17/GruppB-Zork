@@ -6,22 +6,11 @@ using System.Threading.Tasks;
 
 namespace GruppBZork.Entities
 {
-    class Item : Thing
+    class Item : GameObject
     {
         public string Details { get; set; }
-
-        public bool CanBeTaken { get; set; }
-        public string TakeMeText { get; set; }
-
-        public Item(string Name, string Description) : base(Name, Description)
+        public Item(string name, string description) : base(name, description)
         {
-
-        }
-
-        public void MakeTakeable(string TakeMeText)
-        {
-            CanBeTaken = true;
-            this.TakeMeText = TakeMeText;
         }
     }
 }
