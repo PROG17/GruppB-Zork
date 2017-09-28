@@ -9,8 +9,11 @@ namespace GruppBZork.Entities
     class Item : GameObject
     {
         public string Details { get; set; }
-        public Item(string name, string description) : base(name, description)
+        public bool CanBeTaken { get; set; }
+
+        public Item(string name, string description, bool canBeTaken) : base(name, description)
         {
+            CanBeTaken = canBeTaken;
         }
     }
 }

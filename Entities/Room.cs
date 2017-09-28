@@ -13,6 +13,7 @@ namespace GruppBZork.Entities
         public List<Exit> listOfExits = new List<Exit>();
 
         public List<Item> listOfItems = new List<Item>();
+
         public Room(string name, string description) : base(name, description)
         {
             Name = name;
@@ -22,15 +23,16 @@ namespace GruppBZork.Entities
         public void DescribeRoom()
         {
             Console.WriteLine(Description);
-            Console.WriteLine("Here is a list of items in the room: ");
-
+            Console.WriteLine();
+            Console.Write("Here is a list of items in the room: ");
+            Console.WriteLine();
             foreach (var item in listOfItems)
             {
-                Console.WriteLine($"{item.Name}: {item.Description}");
+                Console.Write($"{item.Name}: {item.Description} ");
                 Console.WriteLine();
             }
-
-            Console.WriteLine("Exits: ");
+            Console.WriteLine();
+            Console.WriteLine("Room exits: ");
             foreach (var exit in listOfExits)
             {
                 Console.WriteLine($"{exit.Name}: {exit.Description}");
