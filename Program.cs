@@ -14,14 +14,14 @@ namespace GruppBZork
         public static void Go(Exit destination)
         {
 
-            foreach (var item in currentRoom.listOfExits)
+            foreach (var exit in currentRoom.listOfExits)
             {
-                Console.WriteLine(item);
+                Console.WriteLine(exit);
 
-                if (item == destination)
+                if (exit == destination)
                 {
+                    currentRoom = exit.GoThrough(currentRoom);
 
-                    //this is a comment
                 }
             }
             //currentRoom = resultRoom; 
@@ -30,13 +30,20 @@ namespace GruppBZork
 
         static void Main(string[] args)
         {
-
+            //Room 1
             Room testRoom = new Room(name: "Test Room", description: "Welcome to Test Room");
+           
+            //Room 2
             Room testRoom2 = new Room(name: "Test Room Two", description: "Welcome to Test Room Two");
 
+            //Items
             testRoom.listOfItems.Add(new Item(name: "Test Key", description: "This is a test key"));
-            testRoom.listOfExits.Add(new Exit(name: "Test Door", description: "This is a test door"));
+
+            //Exits
+            testRoom.listOfExits.Add(new Exit(name: "Test Door", description: "This is a test door") {room1 = testRoom, room2 = testRoom2});
             testRoom.listOfExits.Add(new Exit(name: "Test Door 2", description: "This is a test door 2"));
+
+           
 
             currentRoom = testRoom;
 
