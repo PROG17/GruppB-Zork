@@ -9,7 +9,7 @@ namespace GruppBZork.Entities
     class Player
     {
         public string Name { get; set; }
-        public static List<Item> inventory = new List<Item>();
+        public static Dictionary<string, Item> inventory = new Dictionary<string, Item>();
 
         public Player(string name)
         {

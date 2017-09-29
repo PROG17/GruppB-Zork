@@ -8,27 +8,27 @@ namespace GruppBZork.Entities
 {
    class Exit : GameObject
     {
-        public Room room1;
-        public Room room2;
+        public Room Room1 { get; set; }
+        public Room Room2 { get; set; }
+
         public bool Locked;
         
 
-        public Exit(string name, string description, bool locked) : base(name, description)
+        public Exit(string name, string description, bool locked, Room room1, Room room2) : base(name, description)
         {
-            Name = name;
-            Description = description;
+            Room1 = room1;
+            Room2 = room2;
             Locked = locked;
-            
         }
         public Room GoThrough(Room currentRoom)
         {
-            if (room1 == currentRoom)
+            if (Room1 == currentRoom)
             {
-                return room2;
+                return Room2;
             }
             else
             {
-                return room1;
+                return Room1;
             }
         }
     }

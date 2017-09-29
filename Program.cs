@@ -18,50 +18,58 @@ namespace GruppBZork
         {
             foreach (var exit in currentRoom.listOfExits)
             {
-                if (exit == destination)
+                if (exit.Value == destination)
                 {
-                    currentRoom = exit.GoThrough(currentRoom);
+                    currentRoom = exit.Value.GoThrough(currentRoom);
                 }
             }
         }
 
         /// <summary>
-        /// Metoden är kanske inte den effektivaste med fungerar såhär! 
-        /// två lokala instanser av Item skapas. itemOne och itemTwo
-        /// User input splittas med hjälp av .Split(' ') till en array av strings.
         /// Exempel: > USE KEY ON LOCKEDDOOR. 
-        /// Loopar igenom listan currentRoom.listOfItems om ett objekt matchar 4 ordet(LOCKED DOOR).
-        /// På samma sätt loopar man igenom inventory men med andra ordet från input.
-        /// Objekten som man hittar kopierar man till en an de lokala instanserna. 
-        /// 
-        /// Sedan kollar man if (itemOne.Name == itemTwo.PairWith1) 
+        /// Loopar igenom listan currentRoom.listOfItems om ett objekt matchar secondItem strängen ex. "LOCKEDDOOR".
+        /// På samma sätt loopar man igenom inventory men för firstItem
+        /// sen kollar man om firstItem objektet har secondItem obj i matches
+        /// (actor.Value.Matches == target.Key) 
+        /// Fungerar likadant för items on exits
         /// </summary>
-        public static void UseItemOnItem(string userinput)
+        public static void UseItemOnItem(string firstItem, string secondItem)
         {
-            Item itemOne = new Item("", "", true);
-            Item itemTwo = new Item("", "", true);
-            userinput = userinput.ToUpper();
-            var sb = userinput.Split(' ');
-            if (sb.Length == 4)
+            foreach (var target in currentRoom.listOfItems) // Item on Item
             {
-                foreach (var item in currentRoom.listOfItems)
+                if (target.Key == secondItem) // Found target item
                 {
-                    if (item.Name == sb[3].ToString())
+                    foreach (var actor in Player.inventory)
                     {
-                        itemTwo = (Item)item;
-
-                        foreach (var item2 in Player.inventory)
+                        if (actor.Key == firstItem) // Fount actor item
                         {
-                            if (item2.Name == sb[1].ToString())
+                            if(actor.Value.Matches == target.Key)
                             {
-                                itemOne = (Item)item2;
+                                // Return combined item method in item class
+                                // Maybe remove ingoing items - Attribute of both items
                             }
                         }
                     }
+                    return;
                 }
-                if (itemOne.Name == itemTwo.pairUpWith1)
-                { Console.WriteLine($"Du låste upp: {itemTwo.Name} med {itemOne.Name}"); return; }
-                else { }
+            }
+            foreach (var exit in currentRoom.listOfExits) // Item on Exit
+            {
+                if (exit.Key == secondItem) // found target exit
+                {
+                    foreach (var actor in Player.inventory)
+                    {
+                        if (actor.Key == firstItem) // Fount actor item
+                        {
+                            if (actor.Value.Matches == exit.Key)
+                            {
+                                exit.Value.Locked = false;
+                                // Maybe remove ingoing items - Attribute of the actor item
+                            }
+                        }
+                    }
+                    return;
+                }
             }
         }
 
@@ -76,7 +84,7 @@ namespace GruppBZork
             {
                 if (Player.inventory.Count > 0)
                 {
-                    Console.Write($"{item.Name} ");
+                    Console.Write($"{item.Value.Name} ");
                     noItemsInList = false;
                 }
             }
@@ -96,24 +104,24 @@ namespace GruppBZork
         /// </summary>
         public static void PickUpItem(string userInput, Room currentRoom)
         {
-            foreach (var item in currentRoom.listOfItems)
+            foreach (var item in currentRoom.listOfItems) // Look in listOFItems for my Item
             {
-                if (item.CanBeTaken == true && item.Name == userInput.ToUpper())
+                if (item.Key == userInput) // Found my item
                 {
-                    Console.WriteLine($"You picked up {item.Name}!");
-                    Player.inventory.Add(item);
-                    currentRoom.listOfItems.Remove(item);
-                    return;
-                }
-                else if (item.CanBeTaken == false && item.Name == userInput.ToUpper())
-                {
-                    Console.WriteLine($"You cannot pick up {item.Name}!");
-                }
-                else
-                {
-                    Console.WriteLine($"There is no {userInput} in this room");
+                    if (item.Value.CanBeTaken == true) // Can I Take item?
+                    {
+                        Console.WriteLine($"You picked up {item.Value.Name}!");
+                        Player.inventory.Add(item.Key, item.Value);
+                        currentRoom.listOfItems.Remove(item.Key);
+                    }
+                    else // No.
+                    {
+                        Console.WriteLine($"You cannot pick up {item.Value.Name}!");
+                    } 
+                    return; // Already found the item so end no matter if I picked it up or not
                 }
             }
+            Console.WriteLine($"There is no such item in this room"); // I checked, promise.
         }
 
         /// <summary>DropItem(string userInput, Room currentRoom)       
@@ -128,16 +136,16 @@ namespace GruppBZork
         {
             foreach (var item in Player.inventory)
             {
-                if (item.Name == userInput.ToUpper())
+                if (item.Value.Name == userInput.ToUpper())
                 {
-                    Console.WriteLine($"You droped {item.Name}!");
-                    currentRoom.listOfItems.Add(item);
-                    Player.inventory.Remove(item);
+                    Console.WriteLine($"You droped {item.Value.Name}!");
+                    currentRoom.listOfItems.Add(item.Key, item.Value);
+                    Player.inventory.Remove(item.Key);
                     return;
                 }
                 else
                 {
-                    Console.WriteLine($"There is no {userInput} in your inventory");
+                    Console.WriteLine($"There is no such item in your inventory");
                 }
 
             }
@@ -145,6 +153,67 @@ namespace GruppBZork
 
 
 
+        /* Ta vår input och dela upp den
+         * ta första ordet och hitta rätt "metod"
+         * räkna antal ord 
+         * beroende på antal ord ska vi leta efter olika saker i listor.
+         * returna ett/fler objekt.
+         * 
+         */
+
+        static void GameEngine()
+        {
+            string input = Console.ReadLine().ToUpper();
+            string[] commandList = input.Split(' ');
+
+            if (commandList[0] == "GO")
+            {
+                foreach (var exit in currentRoom.listOfExits)
+                {
+                    if (commandList[1] == exit.Key)
+                    {
+                        Go(exit.Value);
+                        return;
+                    }
+                }
+            }
+            else if (commandList[0] == "TAKE")
+            {
+                foreach (var item in currentRoom.listOfItems)
+                {
+                    if (commandList[1] == item.Key)
+                    {
+                        PickUpItem(commandList[1], currentRoom);
+                        return;
+                    }
+                }
+            }
+            else if (commandList[0] == "DROP")
+            {
+                foreach (var item in Player.inventory)
+                {
+                    if (commandList[1] == item.Key)
+                    {
+                        DropItem(commandList[1], currentRoom);
+                        return;
+                    }
+                }
+            }
+            else if (commandList[0] == "USE")
+            {
+                if (commandList.Count() == 4)
+                {
+                    UseItemOnItem(commandList[1], commandList[3]);
+                }
+                else if (commandList.Count() == 2)
+                {
+                    Console.WriteLine("Not implemented yet");
+                    //UseItem(commandList[1]); 
+                }
+                return;
+            }
+
+        }
 
         static void Main(string[] args)
         {
@@ -157,59 +226,23 @@ namespace GruppBZork
             Room redRoom = new Room(name: "REDRROOM", description: "Welcome to the red room");
 
             //Items
-            blueRoom.listOfItems.Add(new Item(name: "KEY", description: "This is a test key", canBeTaken: true) { pairUpWith1 = "LOCKEDDOOR" });
-            blueRoom.listOfItems.Add(new Item(name: "LOCKEDDOOR", description: "This is a test key", canBeTaken: true) { pairUpWith1 = "KEY" });
-            blueRoom.listOfItems.Add(new Item(name: "SOFA", description: "This is a test sofa", canBeTaken: false));
+            blueRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test key", canBeTaken: true) { Matches = "LOCKEDDOOR" });
+            blueRoom.listOfItems.Add("LOCKEDDOOR", new Item(name: "LockedDoor", description: "This is a test key", canBeTaken: true) { Matches = "KEY" });
+            blueRoom.listOfItems.Add("SOFA", new Item(name: "SOFA", description: "This is a test sofa", canBeTaken: false));
 
             //Exits
-            blueRoom.listOfExits.Add(new Exit(name: "REDDOOR", description: "Denna dörr leder ingenstans", locked: true) { room1 = blueRoom, room2 = redRoom });
-            redRoom.listOfExits.Add(new Exit(name: "BLUEDOOR", description: "Du står inne i ", locked: false) { room1 = blueRoom, room2 = redRoom });
+            var redDoor = new Exit(name: "REDDOOR", description: "Dörr mellan red och blue", locked: true, room1: blueRoom, room2: redRoom);
+            
+            //ExitsAddToLists
+            blueRoom.listOfExits.Add("EAST", redDoor);
+            redRoom.listOfExits.Add("WEST", redDoor);
 
-
-
-
+            currentRoom = blueRoom;
 
             while (true)
             {
-                currentRoom = blueRoom;
                 currentRoom.DescribeRoom();
-
-                string input = Console.ReadLine().ToUpper();
-
-                if (input == "GO")
-                {
-                    Go(currentRoom.listOfExits[0]);
-                }
-                if (input == "PICK KEY" || input == "PICK SOFA")///Testar PickUpItem och dropItem
-                {
-                    if (input == "PICK KEY")
-                    { input = "KEY"; }
-                    else { input = "SOFA"; }
-
-                    foreach (var item in currentRoom.listOfItems)
-                    {
-                        if (item.Name == input)
-                        { PickUpItem(input, currentRoom); break; }
-                    }
-
-                    ShowInventory();
-                }
-                if (input == "DROP KEY")    ///Testar DropIte´m
-                {
-                    input = "KEY";
-
-                    foreach (var item in Player.inventory)
-                    {
-                        if (item.Name == "KEY")
-                        { DropItem(input, currentRoom); break; }
-                    }
-
-                    ShowInventory();
-                }
-                if (input == "USE KEY ON LOCKEDDOOR")
-                {
-                    UseItemOnItem(input);
-                }
+                GameEngine();
             }
         }
     }

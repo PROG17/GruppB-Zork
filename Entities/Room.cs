@@ -10,9 +10,8 @@ namespace GruppBZork.Entities
     class Room : GameObject
 
     {
-        public List<Exit> listOfExits = new List<Exit>();
-
-        public List<Item> listOfItems = new List<Item>();
+        public Dictionary<string,Exit> listOfExits = new Dictionary<string, Exit>();
+        public Dictionary<string,Item> listOfItems = new Dictionary<string, Item>();
 
         public Room(string name, string description) : base(name, description)
         {
@@ -23,21 +22,18 @@ namespace GruppBZork.Entities
         public void DescribeRoom()
         {
             Console.WriteLine(Description);
-            Console.WriteLine();
-            Console.Write("Here is a list of items in the room: ");
-            Console.WriteLine();
+            Console.Write("Here is a list of items in the room: \n");
             foreach (var item in listOfItems)
             {
-                Console.Write($"{item.Name}: {item.Description} ");
-                Console.WriteLine();
+                Console.Write($"{item.Value.Name}: {item.Value.Description}\n");
             }
-            Console.WriteLine();
-            Console.WriteLine("Room exits: ");
+            Console.WriteLine("\nRoom exits: ");
             foreach (var exit in listOfExits)
             {
-                Console.WriteLine($"{exit.Name}: {exit.Description}");
+                Console.WriteLine($"{exit.Value.Name}: {exit.Value.Description}");
 
             }
+            Console.WriteLine();
         }
     }
 }
