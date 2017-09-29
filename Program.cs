@@ -33,6 +33,7 @@ namespace GruppBZork
         /// (actor.Value.Matches == target.Key) 
         /// Fungerar likadant för items on exits
         /// </summary>
+        
         public static void UseItemOnItem(string firstItem, string secondItem)
         {
             foreach (var target in currentRoom.listOfItems) // Item on Item
@@ -44,6 +45,26 @@ namespace GruppBZork
                         if (actor.Key == firstItem) // Fount actor item
                         {
                             if(actor.Value.Matches == target.Key)
+                            {
+                                Item.CombineItem(target.Value);
+                                Console.WriteLine($"{target.Value.Description}");
+                                // Return combined item method in item class
+                                // Maybe remove ingoing items - Attribute of both items
+                            }
+                        }
+                    }
+                    return;
+                }
+            }
+            foreach (var target in Player.inventory) // Item on Item
+            {
+                if (target.Key == secondItem) // Found target item
+                {
+                    foreach (var actor in Player.inventory)
+                    {
+                        if (actor.Key == firstItem) // Fount actor item
+                        {
+                            if (actor.Value.Matches == target.Key)
                             {
                                 // Return combined item method in item class
                                 // Maybe remove ingoing items - Attribute of both items
@@ -172,7 +193,7 @@ namespace GruppBZork
                 {
                     if (commandList[1] == exit.Key)
                     {
-                        Go(exit.Value);
+                        Go(exit.Value);                        
                         return;
                     }
                 }
@@ -212,7 +233,6 @@ namespace GruppBZork
                 }
                 return;
             }
-
         }
 
         static void Main(string[] args)
@@ -226,8 +246,8 @@ namespace GruppBZork
             Room redRoom = new Room(name: "REDRROOM", description: "Welcome to the red room");
 
             //Items
-            blueRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test key", canBeTaken: true) { Matches = "LOCKEDDOOR" });
-            blueRoom.listOfItems.Add("LOCKEDDOOR", new Item(name: "LockedDoor", description: "This is a test key", canBeTaken: true) { Matches = "KEY" });
+            blueRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true) { Matches = "BOTTLE" });
+            blueRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true) { CombinedDescription ="Opened bottle", Matches = "CORKSCREW" });
             blueRoom.listOfItems.Add("SOFA", new Item(name: "SOFA", description: "This is a test sofa", canBeTaken: false));
 
             //Exits
