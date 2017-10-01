@@ -11,7 +11,7 @@ namespace GruppBZork
 {
     class Program
     {
-        // "GLOBAL" < - wat
+        Player player = new Player("Börje KrachDumi");
         static Room currentRoom;
 
         public static void PickUpItem(string userInput, Room currentRoom)
@@ -128,7 +128,41 @@ namespace GruppBZork
 
         static void Main(string[] args)
         {
-            Player player = new Player("Börje KrachDumi");
+            Console.WriteLine("ZORK: The Room Adventure \nCopyright (c) 2017 FAM Inc. All rights reserved");
+
+            Console.WriteLine();
+
+
+            Console.Write("Enter your name to start the game: ");
+            string playerName = Console.ReadLine();
+            Console.WriteLine();
+
+            Console.WriteLine($"Welcome {playerName} to the Room Adventure!\n" +
+                "In your hand there is a note that reads; \n\n\"We know that you're afraid, but there is no " +
+                "time to doubt yourself because \nonly you can save yourself from this place. Defeat every " +
+                "obstacle that comes your way and maybe, \njust maybe you'll get out of here alive... Good Luck!\"");
+            Console.WriteLine("\n* press any key to continue *");
+            Console.ReadKey();
+        
+            Console.WriteLine("\n\nHere is a list of commands you can use in the game: ");
+            Console.WriteLine("-------------------------------------------------------------\n");
+
+            Console.WriteLine("GO --> The directions in this game are: NORTH, SOUTH, EAST, WEST. \nEx. Type GO EAST to go in that direction.\n");
+            Console.WriteLine("USE --> To use an item on another item, type USE \"ITEM\" ON \"ITEM\"\n");
+            Console.WriteLine("TAKE --> Type TAKE followed by the name of the item to pick it up\n");
+            Console.WriteLine("DROP --> Type DROP followed by the name of the item to drop an item\n");
+            Console.WriteLine("LOOK --> Repeat description of the current room.\n");
+            Console.WriteLine("INSPECT --> A more detailed description of an item\n");
+            Console.WriteLine("SHOW INVENTORY --> Shows your inventory list\n");
+            Console.WriteLine("HELP --> When you feel lost, type HELP and the Command List will pop up\n");
+
+            Console.WriteLine("------------------------------------------------------------");
+            Console.WriteLine("* press any key to continue *");
+            Console.ReadKey();
+            Console.Clear();
+
+
+            ///Ändrade namnen på testrummen och object för att lättare skilja på dem
 
             //Room 1
             Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
