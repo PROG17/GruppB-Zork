@@ -11,49 +11,9 @@ namespace GruppBZork
 {
     class Program
     {
-        Player player = new Player("Börje KrachDumi");
+        // "GLOBAL" < - wat
         static Room currentRoom;
 
-        /// <summary>
-        /// Exempel: > USE KEY ON LOCKEDDOOR. 
-        /// Loopar igenom listan currentRoom.listOfItems om ett objekt matchar secondItem strängen ex. "LOCKEDDOOR".
-        /// På samma sätt loopar man igenom inventory men för firstItem
-        /// sen kollar man om firstItem objektet har secondItem obj i matches
-        /// (actor.Value.Matches == target.Key) 
-        /// Fungerar likadant för items on exits
-        /// </summary>
-
-
-
-        /// <summary>
-        /// ShowInventory() Loopar igenom Player.inventory och skriver ut vad som finns där
-        /// </summary>
-        public static void ShowInventory()
-        {
-            Console.Write($"You have: ");
-            bool noItemsInList = true;
-            foreach (var item in Player.inventory)
-            {
-                if (Player.inventory.Count > 0)
-                {
-                    Console.Write($"{item.Value.Name} ");
-                    noItemsInList = false;
-                }
-            }
-            if (noItemsInList == true)
-            { Console.WriteLine($"Zero items in your inventory!"); }
-            else
-            { Console.WriteLine($"in your inventory!"); }
-        }
-
-        /// <summary>PickUpItem(string userInput, Room currentRoom)       
-        /// Metoden används för att plocka upp ett objekt. 
-        /// Inparametrarna är här:
-        /// <param name="userInput"></param>
-        /// <param name="currentRoom"></param>
-        /// Ifall objeket finns i rummet och "canBetakeable" så flyttas objeketet från 
-        /// currentRoom.itemList ===> Player.inventory
-        /// </summary>
         public static void PickUpItem(string userInput, Room currentRoom)
         {
             foreach (var item in currentRoom.listOfItems) // Look in listOFItems for my Item
@@ -69,21 +29,13 @@ namespace GruppBZork
                     else // No.
                     {
                         Console.WriteLine($"You cannot pick up {item.Value.Name}!");
-                    } 
+                    }
                     return; // Already found the item so end no matter if I picked it up or not
                 }
             }
             Console.WriteLine($"There is no such item in this room"); // I checked, promise.
         }
 
-        /// <summary>DropItem(string userInput, Room currentRoom)       
-        /// Metoden används för att droppa ett objekt. 
-        /// Inparametrarna är här:
-        /// <param name="userInput"></param>
-        /// <param name="currentRoom"></param>
-        /// Ifall objeket finns i Player.inventory så flyttas objeketet från 
-        /// Player.inventory ===> currentRoom.itemList 
-        /// </summary>
         public static void DropItem(string userInput, Room currentRoom)
         {
             foreach (var item in Player.inventory)
@@ -104,14 +56,6 @@ namespace GruppBZork
         }
 
 
-
-        /* Ta vår input och dela upp den
-         * ta första ordet och hitta rätt "metod"
-         * räkna antal ord 
-         * beroende på antal ord ska vi leta efter olika saker i listor.
-         * returna ett/fler objekt.
-         * 
-         */
 
         static void GameEngine() // Input parser
         {
@@ -172,15 +116,19 @@ namespace GruppBZork
                     Item.UseItemOnItem(commandList[1], commandList[3], currentRoom);
                 return;
             }
+            else if (commandList[0] == "SHOW" && commandList[1] == "INVENTORY")
+            {
+                Player.ShowInventory();
+            }
             else
             {
-                Console.WriteLine("Use the commands: Go, Use, Look or Inspect" );
+                Console.WriteLine("Use the commands: Go, Use, Look or Inspect");
             }
         }
 
         static void Main(string[] args)
         {
-            ///Ändrade namnen på testrummen och object för att lättare skilja på dem
+            Player player = new Player("Börje KrachDumi");
 
             //Room 1
             Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
@@ -191,20 +139,25 @@ namespace GruppBZork
             //Items
             firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
             {
+                Persistent = true,
                 Matches = "BOTTLE",
                 CombinedItemKey = "OPENED BOTTLE",
-                CombinedItem = new Item ( name: "Opened bottle",
+                CombinedItem = new Item(name: "Opened bottle",
                 description: "This is a an opened bottle",
                 canBeTaken: true)
 
             });
 
-            firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true) { CombinedDescription ="Opened bottle", Matches = "CORKSCREW" });
-            firstRoom.listOfItems.Add("KEY", new Item(name: "KEY", description: "This is a test KEY", canBeTaken: true) { Matches = "DOOR" });
+            firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true)
+            {
+                Persistent = false,
+                Matches = "CORKSCREW"
+            });
+            firstRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test KEY", canBeTaken: true) { Matches = "DOOR" });
 
             //Initialize Exits
             var door = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
-            
+
             //Exits add to lists of rooms
             firstRoom.listOfExits.Add("EAST", door);
             secondRoom.listOfExits.Add("WEST", door);

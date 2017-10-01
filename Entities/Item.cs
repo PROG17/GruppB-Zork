@@ -10,18 +10,16 @@ namespace GruppBZork.Entities
     {
         public string Details { get; set; }
         public bool CanBeTaken { get; set; }
+        public string UseItemDescription { get; set; }
 
-        
         /// <summary>
         /// Om man behöver para ihop två object så finns några extra parametrar.
         /// Tanken är att man ska skriva in deras namn och lika så på det andra
         /// itemet så blir de ett par.
         /// </summary>
-        
-        public string Matches { get; set; }
 
+        public string Matches { get; set; }
         public string CombinedItemKey { get; set; }
-        public string CombinedDescription { get; set; }
         public Item CombinedItem { get; set; }
         public bool Persistent { get; set; }
 
@@ -30,12 +28,6 @@ namespace GruppBZork.Entities
         public Item(string name, string description, bool canBeTaken) : base(name, description)
         {
             CanBeTaken = canBeTaken;
-        }
-        
-
-        public static void UseItemDescription(Item item)
-        {
-            item.Description = item.CombinedDescription;
         }
 
         public static void UseItemOnItem(string firstItem, string secondItem, Room currentRoom)
@@ -62,7 +54,7 @@ namespace GruppBZork.Entities
                     }
                     Console.WriteLine($"You don't have {firstItem.ToLower()} in your inventory.");
                     return; // Found target but not actor
-                }  
+                }
             }
             // Open an Exit with an item
             foreach (var exit in currentRoom.listOfExits)
@@ -89,7 +81,7 @@ namespace GruppBZork.Entities
                             return;
                         }
                     }
-                    Console.WriteLine($"You don't have {firstItem.ToLower()} item in your inventory.");
+                    Console.WriteLine($"You don't have {firstItem.ToLower()} in your inventory.");
                     return;
                 }
             }
@@ -104,19 +96,20 @@ namespace GruppBZork.Entities
                         {
                             if (actor.Value.Matches == target.Key)
                             {
-                                Player.inventory.Add(actor.Key, actor.Value.CombinedItem);
+                                Player.inventory.Add(actor.Value.CombinedItemKey, actor.Value.CombinedItem);
+                                if (actor.Value.Persistent == false) { Player.inventory.Remove(actor.Key); }
+                                if (target.Value.Persistent == false) { Player.inventory.Remove(target.Key); }
                             }
                             else
-                            {
                                 Console.WriteLine("You can't combine these items.");
-                            }
                             return;
                         }
                     }
+                    Console.WriteLine($"You don't have {firstItem.ToLower()} in your inventory.");
                     return;
                 }
             }
-            Console.WriteLine("Can't find any of these items/exits.");
+            Console.WriteLine($"Can't find {secondItem.ToLower()} in the room or your inventory.");
         }
     }
 }

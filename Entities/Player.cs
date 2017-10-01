@@ -17,6 +17,30 @@ namespace GruppBZork.Entities
             Name = name;
             //Name = Console.ReadLine();            
         }
+
+        public static void ShowInventory()
+        {
+            if (inventory.Count() == 0)
+            {
+                Console.WriteLine($"There's nothing in your inventory.");
+                return;
+            }
+            int count = 1;
+            Console.Write($"You have: ");
+            foreach (var item in inventory)
+            {
+
+                if (count == inventory.Count())
+                {
+                    Console.Write($"{item.Value.Name} ");
+                    Console.WriteLine($"in your inventory!");
+                    return;
+                }
+                Console.Write($"{item.Value.Name}, ");
+                count++;
+            }
+
+        }
     }
 }
 
