@@ -12,6 +12,7 @@ namespace GruppBZork.Entities
     {
         public Dictionary<string, Exit> listOfExits = new Dictionary<string, Exit>();
         public Dictionary<string, Item> listOfItems = new Dictionary<string, Item>();
+        public bool EndPoint { get; set; }
 
         public Room(string name, string description) : base(name, description)
         {
@@ -21,6 +22,12 @@ namespace GruppBZork.Entities
 
         public void DescribeRoom()
         {
+            if (EndPoint)
+            {
+                Console.WriteLine(Description);
+                Program.EndGame();
+                return;
+            }
             Console.Clear();
             Console.WriteLine(Description);
             Console.WriteLine();
@@ -46,11 +53,15 @@ namespace GruppBZork.Entities
                 {
                     if (direction == exit.Key)
                     {
-                        return exit.Value.GoThrough(this);
+                        Room newRoom = exit.Value.GoThrough(this);
+                        newRoom.DescribeRoom();
+                        return newRoom;
                     }
                 }
                 Console.WriteLine("There is no exit in that direction.");
+                return this;
             }
+            Console.WriteLine("Write directions: east, west, north or south.");
             return this;
         }
     }

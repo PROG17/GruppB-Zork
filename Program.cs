@@ -13,6 +13,8 @@ namespace GruppBZork
     {
         static Player player = new Player("Börje KrachDumi");
         static Room currentRoom;
+        static bool GameOver = false;
+
 
         static void GameEngine() // Input parser
         {
@@ -20,12 +22,11 @@ namespace GruppBZork
             string input = Console.ReadLine().ToUpper();
             string[] commandList = input.Split(' ');
             Console.WriteLine();
-            if (commandList.Count() == 2 )
+            if (commandList.Count() == 2)
             {
                 if (commandList[0] == "GO")
                 {
                     currentRoom = currentRoom.Go(commandList[1]);
-                    currentRoom.DescribeRoom();
                 }
                 else if (commandList[0] == "TAKE")
                 {
@@ -50,7 +51,7 @@ namespace GruppBZork
                     Console.WriteLine("Write Help for info on how to use the commands.");
                 }
             }
-            else if(commandList.Count() == 4)
+            else if (commandList.Count() == 4)
             {
                 if (commandList[0] == "USE")
                     Item.UseItemOnItem(commandList[1], commandList[3], currentRoom);
@@ -102,26 +103,35 @@ namespace GruppBZork
             Console.ReadKey();
         }
 
+        public static void EndGame()
+        {
+            GameOver = true;
+        }
         static void Main(string[] args)
         {
 
-           
+
             //Room 1
             Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
 
             //Room 2
             Room secondRoom = new Room(name: "First Room", description: "Welcome to the second room");
 
+            Room thirdRoom = new Room(name: "Third Room", description: "Welcome to the third room");
+
+            Room endRoom = new Room(name: "End Room", description: "Good Game!") { EndPoint = true };
+
             //Items
             firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
             {
                 Persistent = true,
-                Matches = "BOTTLE",
+                Match = "BOTTLE",
                 CombinedItemKey = "OPENED BOTTLE",
                 CombinedItem = new Item(name: "Opened bottle",
                 description: "This is a an opened bottle",
                 canBeTaken: true),
-                UseItemDescription = "You uncorked the bottle! ;)"
+                UseItemActionDescription = "You uncorked the bottle! ;)",
+
 
 
             });
@@ -129,22 +139,23 @@ namespace GruppBZork
             firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true)
             {
                 Persistent = false,
-                Matches = "CORKSCREW",
-                CombinedItemKey = "OPENED BOTTLE",
+                Match = "CORKSCREW",
+                CombinedItemKey = "OPENED",
                 CombinedItem = new Item(name: "Opened bottle",
                 description: "This is a an opened bottle",
                 canBeTaken: true),
-                UseItemDescription = "You uncorked the bottle! ;)"
-
+                UseItemActionDescription = "You uncorked the bottle! ;)",
             });
-            firstRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test KEY", canBeTaken: true) { Matches = "DOOR" });
+            firstRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test KEY", canBeTaken: true) { BadMatch = "DOOR2" });
 
             //Initialize Exits
-            var door = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
-
+            var first_second = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
+            var second_end = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
+            
             //Exits add to lists of rooms
-            firstRoom.listOfExits.Add("EAST", door);
-            secondRoom.listOfExits.Add("WEST", door);
+            firstRoom.listOfExits.Add("EAST", first_second);
+            secondRoom.listOfExits.Add("WEST", first_second);
+            secondRoom.listOfExits.Add("EAST", second_end);
 
             //Start setup.
             StartupText();
@@ -155,7 +166,7 @@ namespace GruppBZork
             currentRoom = firstRoom;
             currentRoom.DescribeRoom();
 
-            while (true)
+            while (GameOver == false)
             {
                 GameEngine();
             }

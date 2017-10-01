@@ -10,13 +10,15 @@ namespace GruppBZork.Entities
     {
         public string Details { get; set; }
         public bool CanBeTaken { get; set; }
-        public string UseItemDescription { get; set; }
-        public string Matches { get; set; }
+        public string UseItemActionDescription { get; set; }
+        public string Match { get; set; }
+        public string BadMatch { get; set; }
+        public bool UseItemLooseGame { get; set; }
 
         public string CombinedItemKey { get; set; }
         public Item CombinedItem { get; set; }
         public bool Persistent { get; set; }
-        
+
 
 
 
@@ -27,23 +29,30 @@ namespace GruppBZork.Entities
 
         public static void UseItemOnItem(string firstItem, string secondItem, Room currentRoom)
         {
-            // Use item on item in room
+            // Use item on item in room - does nothing!!
             foreach (var target in currentRoom.listOfItems)
             {
                 if (target.Key == secondItem) // Found target item
                 {
                     foreach (var actor in Player.inventory)
                     {
-                        if (actor.Key == firstItem) // Fount actor item
+                        if (actor.Key == firstItem) // Found actor item
                         {
-                            if (actor.Value.Matches == target.Key)
+                            if ((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key)
                             {
-                                Console.WriteLine($"{target.Value.Description}");
+                                Console.WriteLine("You died.");
+                                Program.EndGame();
+                                return;
+                            }
+                            if (actor.Value.Match == target.Key)
+                            {
+                                Player.inventory.Add(actor.Value.CombinedItemKey, actor.Value.CombinedItem);
+                                if (actor.Value.Persistent == false) { Player.inventory.Remove(actor.Key); }
+                                if (target.Value.Persistent == false) { currentRoom.listOfItems.Remove(target.Key); }
+                                Console.WriteLine($"{actor.Value.UseItemActionDescription}");
                             }
                             else
-                            {
-                                Console.WriteLine("You can't use {0} on {1}", actor.Value.Name, target.Value.Name);
-                            }
+                                Console.WriteLine("You can't use these items together.");
                             return;
                         }
                     }
@@ -60,19 +69,28 @@ namespace GruppBZork.Entities
                     {
                         if (actor.Key == firstItem) // Fount actor item
                         {
-                            if (actor.Value.Matches == exit.Value.Name.ToUpper())
+                            if (actor.Value.UseItemLooseGame && actor.Value.BadMatch == exit.Value.Name.ToUpper())
                             {
+                                Console.WriteLine("You died. \nGame Over");
+                                Program.EndGame();
+                                return;
+                            }
+                            if (actor.Value.Match == exit.Value.Name.ToUpper())
+                            {
+
                                 if (exit.Value.Locked == false)
                                 {
                                     Console.WriteLine($"{exit.Value.Name} is already open!");
                                 }
                                 else
                                 {
+                                    Console.WriteLine($"{actor.Value.UseItemActionDescription}");
                                     Console.WriteLine("You unlock {0}.", exit.Value.Name);
                                     exit.Value.Locked = false;
                                 }
-
+                                return;
                             }
+                            Console.WriteLine("You can't use {0} on {1}", firstItem.ToLower(), secondItem.ToLower());
                             return;
                         }
                     }
@@ -89,12 +107,18 @@ namespace GruppBZork.Entities
                     {
                         if (actor.Key == firstItem) // Fount actor item
                         {
-                            if (actor.Value.Matches == target.Key)
+                            if (((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key))
+                            {
+                                Console.WriteLine("You died.");
+                                Program.EndGame();
+                                return;
+                            }
+                            if (actor.Value.Match == target.Key)
                             {
                                 Player.inventory.Add(actor.Value.CombinedItemKey, actor.Value.CombinedItem);
                                 if (actor.Value.Persistent == false) { Player.inventory.Remove(actor.Key); }
                                 if (target.Value.Persistent == false) { Player.inventory.Remove(target.Key); }
-                                Console.WriteLine($"{actor.Value.UseItemDescription}");
+                                Console.WriteLine($"{actor.Value.UseItemActionDescription}");
                             }
                             else
                                 Console.WriteLine("You can't combine these items.");
@@ -135,13 +159,33 @@ namespace GruppBZork.Entities
             {
                 if (item.Key == command)
                 {
-                    Console.WriteLine($"You droped {item.Value.Name}!");
+                    Console.WriteLine($"You dropped {item.Value.Name}!");
                     currentRoom.listOfItems.Add(item.Key, item.Value);
                     Player.inventory.Remove(item.Key);
                     return;
                 }
             }
             Console.WriteLine($"There is no such item in your inventory");
+        }
+        public static void Inspect(string command, Room currentRoom)
+        {
+            foreach (var item in currentRoom.listOfItems)
+            {
+                if (item.Key == command)
+                {
+                    Console.WriteLine(item.Value.Details);
+                    return;
+                }
+            }
+            foreach (var item in Player.inventory)
+            {
+                if (item.Key == command)
+                {
+                    Console.WriteLine(item.Value.Details);
+                    return;
+                }
+            }
+            Console.WriteLine($"There is no such item.");
         }
     }
 }
