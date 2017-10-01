@@ -10,6 +10,7 @@ namespace GruppBZork.Entities
     {
         public string Name { get; set; }
         public static Dictionary<string, Item> inventory = new Dictionary<string, Item>();
+        public static Dictionary<string, Item> tempInventory = new Dictionary<string, Item>();
 
         public Player(string name)
         {

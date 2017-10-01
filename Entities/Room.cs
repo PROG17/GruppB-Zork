@@ -30,7 +30,7 @@ namespace GruppBZork.Entities
             Console.WriteLine("\nRoom exits: ");
             foreach (var exit in listOfExits)
             {
-                Console.WriteLine($"{exit.Value.Name}: {exit.Value.Description}");
+                Console.WriteLine($"To the {exit.Key}: {exit.Value.Description}");
 
             }
             Console.WriteLine();
