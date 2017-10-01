@@ -14,17 +14,6 @@ namespace GruppBZork
         Player player = new Player("Börje KrachDumi");
         static Room currentRoom;
 
-        public static void Go(Exit destination)
-        {
-            foreach (var exit in currentRoom.listOfExits)
-            {
-                if (exit.Value == destination)
-                {
-                    currentRoom = exit.Value.GoThrough(currentRoom);
-                }
-            }
-        }
-
         /// <summary>
         /// Exempel: > USE KEY ON LOCKEDDOOR. 
         /// Loopar igenom listan currentRoom.listOfItems om ett objekt matchar secondItem strängen ex. "LOCKEDDOOR".
@@ -72,6 +61,8 @@ namespace GruppBZork
                 }
             }
         }
+
+
 
         /// <summary>
         /// ShowInventory() Loopar igenom Player.inventory och skriver ut vad som finns där
@@ -161,20 +152,31 @@ namespace GruppBZork
          * 
          */
 
-        static void GameEngine()
+        static void GameEngine() // Input parser
         {
             string input = Console.ReadLine().ToUpper();
             string[] commandList = input.Split(' ');
 
             if (commandList[0] == "GO")
             {
-                foreach (var exit in currentRoom.listOfExits)
+                if (commandList[1] == "EAST" || commandList[1] == "WEST" || commandList[1] == "NORTH" || commandList[1] == "SOUTH")
                 {
-                    if (commandList[1] == exit.Key)
+                    foreach (var exit in currentRoom.listOfExits)
                     {
-                        Go(exit.Value);
-                        return;
+                        if (commandList[1] == exit.Key)
+                        {
+                            currentRoom = currentRoom.listOfExits[exit.Key].Go(currentRoom);
+                            currentRoom.DescribeRoom();
+                            return;
+                        }
                     }
+                    Console.WriteLine("There is no exit in that direction.");
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Write a destination: East, West, North or South.\nEx. go east");
+                    return;
                 }
             }
             else if (commandList[0] == "TAKE")
@@ -187,6 +189,7 @@ namespace GruppBZork
                         return;
                     }
                 }
+                Console.WriteLine("There is no such item in this room.");
             }
             else if (commandList[0] == "DROP")
             {
@@ -198,21 +201,20 @@ namespace GruppBZork
                         return;
                     }
                 }
+                Console.WriteLine("You have no such item in your inventory.");
             }
             else if (commandList[0] == "USE")
             {
-                if (commandList.Count() == 4)
-                {
-                    UseItemOnItem(commandList[1], commandList[3]);
-                }
-                else if (commandList.Count() == 2)
-                {
-                    Console.WriteLine("Not implemented yet");
-                    //UseItem(commandList[1]); 
-                }
+                if (commandList.Count() != 4)
+                    Console.WriteLine("Write use <item> with <item> or use <item> with <exit>. \n Ex. use key on door, or use corkscrew on bottle.");
+                else
+                    Item.UseItemOnItem(commandList[1], commandList[3], currentRoom);
                 return;
             }
-
+            else
+            {
+                Console.WriteLine("Use the commands: Go, Use, Look or Inspect" );
+            }
         }
 
         static void Main(string[] args)
@@ -254,28 +256,38 @@ namespace GruppBZork
             ///Ändrade namnen på testrummen och object för att lättare skilja på dem
 
             //Room 1
-            Room blueRoom = new Room(name: "BLUEROOM", description: "Welcome to the blue room");
+            Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
 
             //Room 2
-            Room redRoom = new Room(name: "REDRROOM", description: "Welcome to the red room");
+            Room secondRoom = new Room(name: "First Room", description: "Welcome to the second room");
 
             //Items
-            blueRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test key", canBeTaken: true) { Matches = "LOCKEDDOOR" });
-            blueRoom.listOfItems.Add("LOCKEDDOOR", new Item(name: "LockedDoor", description: "This is a test key", canBeTaken: true) { Matches = "KEY" });
-            blueRoom.listOfItems.Add("SOFA", new Item(name: "Sofa", description: "This is a test sofa", canBeTaken: false));
+            firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
+            {
+                Matches = "BOTTLE",
+                CombinedItemKey = "OPENED BOTTLE",
+                CombinedItem = new Item ( name: "Opened bottle",
+                description: "This is a an opened bottle",
+                canBeTaken: true)
 
-            //Exits
-            var redDoor = new Exit(name: "REDDOOR", description: "Door between red and blue", locked: true, room1: blueRoom, room2: redRoom);
+            });
 
-            //ExitsAddToLists
-            blueRoom.listOfExits.Add("EAST", redDoor);
-            redRoom.listOfExits.Add("WEST", redDoor);
+            firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true) { CombinedDescription ="Opened bottle", Matches = "CORKSCREW" });
+            firstRoom.listOfItems.Add("KEY", new Item(name: "KEY", description: "This is a test KEY", canBeTaken: true) { Matches = "DOOR" });
 
-            currentRoom = blueRoom;
+            //Initialize Exits
+            var door = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
+            
+            //Exits add to lists of rooms
+            firstRoom.listOfExits.Add("EAST", door);
+            secondRoom.listOfExits.Add("WEST", door);
+
+            //Start setup.
+            currentRoom = firstRoom;
+            currentRoom.DescribeRoom();
 
             while (true)
             {
-                currentRoom.DescribeRoom();
                 GameEngine();
             }
         }
