@@ -22,7 +22,8 @@ namespace GruppBZork.Entities
         public void DescribeRoom()
         {
             Console.WriteLine(Description);
-            Console.Write("Here is a list of items in the room: \n");
+            Console.WriteLine();
+            Console.Write("Here is a list of items in the room: \n\n");
             foreach (var item in listOfItems)
             {
                 Console.Write($"{item.Value.Name}: {item.Value.Description}\n");

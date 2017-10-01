@@ -43,7 +43,7 @@ namespace GruppBZork
                     {
                         if (actor.Key == firstItem) // Fount actor item
                         {
-                            if(actor.Value.Matches == target.Key)
+                            if (actor.Value.Matches == target.Key)
                             {
                                 // Return combined item method in item class
                                 // Maybe remove ingoing items - Attribute of both items
@@ -117,7 +117,7 @@ namespace GruppBZork
                     else // No.
                     {
                         Console.WriteLine($"You cannot pick up {item.Value.Name}!");
-                    } 
+                    }
                     return; // Already found the item so end no matter if I picked it up or not
                 }
             }
@@ -217,6 +217,40 @@ namespace GruppBZork
 
         static void Main(string[] args)
         {
+            Console.WriteLine("ZORK: The Room Adventure \nCopyright (c) 2017 FAM Inc. All rights reserved");
+
+            Console.WriteLine();
+
+
+            Console.Write("Enter your name to start the game: ");
+            string playerName = Console.ReadLine();
+            Console.WriteLine();
+
+            Console.WriteLine($"Welcome {playerName} to the Room Adventure!\n" +
+                "In your hand there is a note that reads; \n\n\"We know that you're afraid, but there is no " +
+                "time to doubt yourself because \nonly you can save yourself from this place. Defeat every " +
+                "obstacle that comes your way and maybe, \njust maybe you'll get out of here alive... Good Luck!\"");
+            Console.WriteLine("\n* press any key to continue *");
+            Console.ReadKey();
+        
+            Console.WriteLine("\n\nHere is a list of commands you can use in the game: ");
+            Console.WriteLine("-------------------------------------------------------------\n");
+
+            Console.WriteLine("GO --> The directions in this game are: NORTH, SOUTH, EAST, WEST. \nEx. Type GO EAST to go in that direction.\n");
+            Console.WriteLine("USE --> To use an item on another item, type USE \"ITEM\" ON \"ITEM\"\n");
+            Console.WriteLine("TAKE --> Type TAKE followed by the name of the item to pick it up\n");
+            Console.WriteLine("DROP --> Type DROP followed by the name of the item to drop an item\n");
+            Console.WriteLine("LOOK --> Repeat description of the current room.\n");
+            Console.WriteLine("INSPECT --> A more detailed description of an item\n");
+            Console.WriteLine("SHOW INVENTORY --> Shows your inventory list\n");
+            Console.WriteLine("HELP --> When you feel lost, type HELP and the Command List will pop up\n");
+
+            Console.WriteLine("------------------------------------------------------------");
+            Console.WriteLine("* press any key to continue *");
+            Console.ReadKey();
+            Console.Clear();
+
+
             ///Ändrade namnen på testrummen och object för att lättare skilja på dem
 
             //Room 1
@@ -228,11 +262,11 @@ namespace GruppBZork
             //Items
             blueRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test key", canBeTaken: true) { Matches = "LOCKEDDOOR" });
             blueRoom.listOfItems.Add("LOCKEDDOOR", new Item(name: "LockedDoor", description: "This is a test key", canBeTaken: true) { Matches = "KEY" });
-            blueRoom.listOfItems.Add("SOFA", new Item(name: "SOFA", description: "This is a test sofa", canBeTaken: false));
+            blueRoom.listOfItems.Add("SOFA", new Item(name: "Sofa", description: "This is a test sofa", canBeTaken: false));
 
             //Exits
-            var redDoor = new Exit(name: "REDDOOR", description: "Dörr mellan red och blue", locked: true, room1: blueRoom, room2: redRoom);
-            
+            var redDoor = new Exit(name: "REDDOOR", description: "Door between red and blue", locked: true, room1: blueRoom, room2: redRoom);
+
             //ExitsAddToLists
             blueRoom.listOfExits.Add("EAST", redDoor);
             redRoom.listOfExits.Add("WEST", redDoor);
