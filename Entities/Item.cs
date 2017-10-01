@@ -11,17 +11,12 @@ namespace GruppBZork.Entities
         public string Details { get; set; }
         public bool CanBeTaken { get; set; }
         public string UseItemDescription { get; set; }
-
-        /// <summary>
-        /// Om man behöver para ihop två object så finns några extra parametrar.
-        /// Tanken är att man ska skriva in deras namn och lika så på det andra
-        /// itemet så blir de ett par.
-        /// </summary>
-
         public string Matches { get; set; }
+
         public string CombinedItemKey { get; set; }
         public Item CombinedItem { get; set; }
         public bool Persistent { get; set; }
+        
 
 
 
@@ -99,6 +94,7 @@ namespace GruppBZork.Entities
                                 Player.inventory.Add(actor.Value.CombinedItemKey, actor.Value.CombinedItem);
                                 if (actor.Value.Persistent == false) { Player.inventory.Remove(actor.Key); }
                                 if (target.Value.Persistent == false) { Player.inventory.Remove(target.Key); }
+                                Console.WriteLine($"{actor.Value.UseItemDescription}");
                             }
                             else
                                 Console.WriteLine("You can't combine these items.");
@@ -110,6 +106,42 @@ namespace GruppBZork.Entities
                 }
             }
             Console.WriteLine($"Can't find {secondItem.ToLower()} in the room or your inventory.");
+        }
+        public static void PickUpItem(string command, Room currentRoom)
+        {
+            foreach (var item in currentRoom.listOfItems) // Look in listOFItems for my Item
+            {
+                if (item.Key == command) // Found my item
+                {
+                    if (item.Value.CanBeTaken == true) // Can I Take item?
+                    {
+                        Console.WriteLine($"You picked up {item.Value.Name}!");
+                        Player.inventory.Add(item.Key, item.Value);
+                        currentRoom.listOfItems.Remove(item.Key);
+                    }
+                    else // No.
+                    {
+                        Console.WriteLine($"You cannot pick up {item.Value.Name}!");
+                    }
+                    return; // Already found the item so end no matter if I picked it up or not
+                }
+            }
+            Console.WriteLine($"There is no such item in this room"); // I checked, promise.
+        }
+
+        public static void DropItem(string command, Room currentRoom)
+        {
+            foreach (var item in Player.inventory)
+            {
+                if (item.Key == command)
+                {
+                    Console.WriteLine($"You droped {item.Value.Name}!");
+                    currentRoom.listOfItems.Add(item.Key, item.Value);
+                    Player.inventory.Remove(item.Key);
+                    return;
+                }
+            }
+            Console.WriteLine($"There is no such item in your inventory");
         }
     }
 }

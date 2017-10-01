@@ -22,7 +22,7 @@ namespace GruppBZork.Entities
             LockedDescription = lockedDescription;
         }
 
-        public Room Go(Room currentRoom)
+        public Room GoThrough(Room currentRoom)
         {
             if (Locked)
             {
