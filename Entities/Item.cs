@@ -40,6 +40,8 @@ namespace GruppBZork.Entities
                         {
                             if ((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key)
                             {
+                                if(target.Key=="COMPUTER")
+                                { Console.WriteLine("It was a trap the computer exploded in your face! GAME OVER "); Console.ReadLine(); Program.EndGame(); return; }
                                 Console.WriteLine("You died.");
                                 Program.EndGame();
                                 return;

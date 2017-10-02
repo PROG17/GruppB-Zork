@@ -36,7 +36,10 @@ namespace GruppBZork
                 {
                     Item.DropItem(commandList[1], currentRoom);
                 }
-
+                else if (commandList[0] == "INSPECT")
+                {
+                    Item.Inspect(commandList[1], currentRoom);
+                }
                 else if (commandList[0] == "SHOW" && commandList[1] == "INVENTORY")
                 {
                     Player.ShowInventory();
@@ -112,7 +115,7 @@ namespace GruppBZork
 
 
             //Room 1
-            Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
+            Room firstRoom = new Room(name: "Blue Room", description: "Welcome to the Blueroom, the walls are painted in blue!");
 
             //Room 2
             Room secondRoom = new Room(name: "First Room", description: "Welcome to the second room");
@@ -121,37 +124,41 @@ namespace GruppBZork
 
             Room endRoom = new Room(name: "End Room", description: "Good Game!") { EndPoint = true };
 
-            //Items
-            firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
+            // Items
+            firstRoom.listOfItems.Add("COMPUTER", new Item(name: "Computer", description: "Its a desktopcomputer, it has no power", canBeTaken: false)
             {
+                Description = "Its a dell computer and the powercord is missing",
                 Persistent = true,
-                Match = "BOTTLE",
-                CombinedItemKey = "OPENED BOTTLE",
-                CombinedItem = new Item(name: "Opened bottle",
-                description: "This is a an opened bottle",
-                canBeTaken: true),
-                UseItemActionDescription = "You uncorked the bottle! ;)",
-
-
+                Match = "POWERCORD",
+                CombinedItemKey = "WORKING_COMPUTER",
+                CombinedItem = new Item(name: "COMPUTER2",
+                description: "",
+                canBeTaken: false),
+                UseItemActionDescription = "",
+                UseItemLooseGame=true,            
 
             });
+            firstRoom.listOfItems.Add("POWERCORD", new Item(name: "Powercord", description: "Its a powercord", canBeTaken: true) {  Details = "Its a one meterlong powercord for a computer ", Match = "COMPUTER", BadMatch = "COMPUTER" });
+            firstRoom.listOfItems.Add("SOFA", new Item(name: "Sofa", description: "Its a red threeseated sofa", canBeTaken: false) {  Details = "Its a red, three seated, worndown sofa. Lookes like it has seen its share of tinderdates"});
+           
 
-            firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true)
-            {
-                Persistent = false,
-                Match = "CORKSCREW",
-                CombinedItemKey = "OPENED",
-                CombinedItem = new Item(name: "Opened bottle",
-                description: "This is a an opened bottle",
-                canBeTaken: true),
-                UseItemActionDescription = "You uncorked the bottle! ;)",
+            firstRoom.listOfItems.Add("HAMMERHEAD", new Item(name: "Hammerhead", description: "Its the head of a hammer", canBeTaken: true) { Details = "Its a big ironhammerhead", Match = "STICK" });
+            firstRoom.listOfItems.Add("STICK", new Item(name: "Stick", description: "Its a wooden stick", canBeTaken: true) {
+                Details = "Its the head too an big ironhammer",
+                Match = "HAMMERHEAD",
+                CombinedItemKey = "HAMMER",
+                CombinedItem = new Item(name: "Hammer",
+                description: "Its an big awesome hammer",
+                canBeTaken: true)
+                {Match="PADLOCK", Persistent=true},
+                UseItemActionDescription = "It was a perfect match, you now have an big, awesome *HAMMER* in your inventory",
+                               
             });
-            firstRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test KEY", canBeTaken: true) { BadMatch = "DOOR2" });
-
-            //Initialize Exits
-            var first_second = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
-            var second_end = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
             
+            //Initialize Exits
+            var first_second = new Exit(name: "PADLOCK", description: "Its a stealdoor", locked: true, lockedDescription: "The door is locked with a padlock! ", room1: firstRoom, room2: secondRoom);
+            var second_end = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
+
             //Exits add to lists of rooms
             firstRoom.listOfExits.Add("EAST", first_second);
             secondRoom.listOfExits.Add("WEST", first_second);

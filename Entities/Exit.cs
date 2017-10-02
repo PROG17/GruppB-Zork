@@ -25,7 +25,9 @@ namespace GruppBZork.Entities
         {
             if (Locked)
             {
-                Console.WriteLine(LockedDescription);
+                Console.WriteLine(LockedDescription + "Press enter to continue" );
+                Console.ReadLine();
+                
                 return currentRoom;
             }
             if (Room1 == currentRoom)
