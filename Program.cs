@@ -120,7 +120,7 @@ namespace GruppBZork
             Console.ReadKey();
 
             //Room 1
-            Room firstRoom = new Room(name: "Blue Room", description: "Welcome to the Blueroom, the walls are painted in blue!");
+            Room firstRoom = new Room(name: "Blue Room", description: "WELCOME TO THE BLUE ROOM \nThe walls are painted in blue!");
 
             //Room 2
             Room secondRoom = new Room(name: "Laser Room", description: "WELCOME TO THE LASER ROOM \nThis room is completely black. Everything is dusty and the air reaks of rotten meat.. " +
@@ -128,10 +128,10 @@ namespace GruppBZork
                 "\nThe room is also occupied by evil robot penguins who are ready to attack you. So BEWARE! ");
 
             //Room 3 - Enter from North, dead end room to the south and end of the game to the east.
-            Room thirdRoom = new Room(name: "Steamy Room", description: "Welcome to the Steam room.\nThe room is filled with steaming pipes, levers and valves." + 
+            Room thirdRoom = new Room(name: "Steamy Room", description: "WELCOME TO THE STEAM ROOM \nThe room is filled with steaming pipes, levers and valves." + 
                 "\nThere's a sturdy looking vault door to the west, an open passage to the South and a door to the north.");
 
-            Room fourthRoom = new Room(name: "Tiny storage", description: "Welcome to the storage room.\nIt's a small storage area.");
+            Room fourthRoom = new Room(name: "Tiny storage", description: "WELCOME TO THE STORAGE ROOM \nIt's a small storage area.");
 
             Room endRoom = new Room(name: "End Room", description: $"Freedom! \nYou live for now {player.Name}, good job!") { EndPoint = true };
 
@@ -261,9 +261,7 @@ namespace GruppBZork
 
             //Initialize Exits
             var first_second = new Exit(name: "PADLOCK", description: "Its a stealdoor", locked: true, lockedDescription: "The door is locked with a padlock! ", room1: firstRoom, room2: secondRoom);
-            //var second_first = new Exit(name: "DOOR2", description: "Door between Laser Room and firstRoom", locked: false, lockedDescription: "LOCKED!", room1: secondRoom, room2: firstRoom);
-            var second_third = new Exit(name: "DOOR3", description: "Door between Laser Room and thirdRoom", locked: false, lockedDescription: "LOCKED!", room1: secondRoom, room2: thirdRoom);
-            var second_third = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
+            var second_third = new Exit(name: "DOOR", description: "It's just a door.", locked: false, lockedDescription: "LOCKED!", room1: secondRoom, room2: thirdRoom);
             var third_end = new Exit(name: "VAULT", description: "A large Vault door.", locked: true, lockedDescription: "It won't even budge.", room1: endRoom, room2: thirdRoom) { Details = "It's a very sturdy metal door, there's a suspicious looking hexagonal slot on one side." };
             var third_fourth = new Exit(name: "CORRIDOR", description: "An open corridor.", locked: false, lockedDescription: "", room1: fourthRoom, room2: thirdRoom);
             
@@ -271,21 +269,16 @@ namespace GruppBZork
             firstRoom.listOfExits.Add("EAST", first_second);
             secondRoom.listOfExits.Add("WEST", first_second);
             secondRoom.listOfExits.Add("NORTH", second_third);
-            thirdRoom.listOfExits.Add("NORTH", second_third);
+            thirdRoom.listOfExits.Add("SOUTH", second_third);
             thirdRoom.listOfExits.Add("WEST", third_end);
-            thirdRoom.listOfExits.Add("SOUTH", third_fourth);
-            fourthRoom.listOfExits.Add("NORTH", third_fourth);
+            thirdRoom.listOfExits.Add("NORTH", third_fourth);
+            fourthRoom.listOfExits.Add("SOUTH", third_fourth);
 
             
 
 
 
             //Start setup.
-            StartupText();
-            Help();
-            Console.WriteLine("* press any key to continue *");
-            Console.ReadKey();
-
             currentRoom = firstRoom;
             currentRoom.DescribeRoom();
 
