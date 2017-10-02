@@ -11,7 +11,7 @@ namespace GruppBZork
 {
     class Program
     {
-        static Player player = new Player("Börje KrachDumi");
+        static Player player = new Player();
         static Room currentRoom;
         static bool GameOver = false;
 
@@ -36,7 +36,10 @@ namespace GruppBZork
                 {
                     Item.DropItem(commandList[1], currentRoom);
                 }
-
+                else if (commandList[0] == "INSPECT")
+                {
+                    Item.Inspect(commandList[1], currentRoom);
+                }
                 else if (commandList[0] == "SHOW" && commandList[1] == "INVENTORY")
                 {
                     Player.ShowInventory();
@@ -107,9 +110,14 @@ namespace GruppBZork
         {
             GameOver = true;
         }
+
         static void Main(string[] args)
         {
-
+            //Start setup.
+            StartupText();
+            Help();
+            Console.WriteLine("* press any key to continue *");
+            Console.ReadKey();
 
             //Room 1
             Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
@@ -117,10 +125,48 @@ namespace GruppBZork
             //Room 2
             Room secondRoom = new Room(name: "First Room", description: "Welcome to the second room");
 
-            Room thirdRoom = new Room(name: "Third Room", description: "Welcome to the third room");
+            //Room 3 - Enter from North, dead end room to the south and end of the game to the east.
+            Room thirdRoom = new Room(name: "Steamy Room", description: "The room is filled with steaming pipes, levers and valves." + 
+                "\nThere's a sturdy looking vault door to the west, an open passage to the South and a door to the north.");
 
-            Room endRoom = new Room(name: "End Room", description: "Good Game!") { EndPoint = true };
+            Room fourthRoom = new Room(name: "Tiny storage", description: "It's a small storage area.");
 
+            Room endRoom = new Room(name: "End Room", description: $"Freedom! \nYou live for now {player.Name}, good job!") { EndPoint = true };
+
+            thirdRoom.listOfItems.Add("PIN", new Item("Pin", "A small metal rod.", true)
+            {
+                Details = "It's a small metal rod. There's some sign of wear as if its been used as part of a mechanism.",
+                UseItemActionDescription = "You slot the pin into the round hole at the base of the lever and pull the lever." +
+                "\nYou hear some whirring noises and then a slot opens in the wall next to the lever. \nInside you find a valve!",
+                Persistent = false,
+                Match = "LEVER",
+                CombinedItemKey = "VALVE",
+                CombinedItem = new Item(name: "Valve",
+                description: "It's a large valve.",
+                canBeTaken: true)
+                { Details = "There's a hexagonal protrusion at the bottom of the valve, it looks like it fits onto something.",
+                    UseItemActionDescription = "You slot the hexagonal protrusion of the valve into the slot on the vault door and turn it.",
+                    BadMatch = "SAFE", Match = "VAULT" }
+            });
+            thirdRoom.listOfItems.Add("LEVER", new Item("Lever", "There's a large lever on the wall.", false)
+            {
+                Details = "There is a round hole at the base of the lever where a part seems to be missing.",
+                UseItemActionDescription = "You slot the pin into the round hole at the base of the lever and pull the lever." +
+                "\nYou hear some whirring noises and then a slot opens in the wall next to the lever. \nInside you find a valve!",
+                Persistent = true,
+                Match = "PIN",
+                CombinedItemKey = "VALVE",
+                CombinedItem = new Item(name: "Valve",
+                description: "It's a large valve.",
+                canBeTaken: true)
+                { Details = "There's a hexagonal protrusion at the bottom of the valve, it looks like it fits onto something.", BadMatch = "SAFE", Match = "VAULT" }
+            });
+
+            fourthRoom.listOfItems.Add("SAFE", new Item("Safe", "Its a large metal safe. It could contain a lot of riches!", false)
+            { UseItemActionDescription = "You attach the valve and turn it. When you open the safe you unleash a deadly gas!",
+                Details = "On closer inspection you see a little skull and crossbones on the back of the safe.",
+                UseItemLooseGame = true ,BadMatch = "VALVE"});
+            
             //Items
             firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
             {
@@ -131,9 +177,6 @@ namespace GruppBZork
                 description: "This is a an opened bottle",
                 canBeTaken: true),
                 UseItemActionDescription = "You uncorked the bottle! ;)",
-
-
-
             });
 
             firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true)
@@ -150,20 +193,22 @@ namespace GruppBZork
 
             //Initialize Exits
             var first_second = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
-            var second_end = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
+            var second_third = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
+            var third_end = new Exit(name: "VAULT", description: "A large Vault door.", locked: true, lockedDescription: "It won't even budge.", room1: endRoom, room2: thirdRoom) { Details = "It's a very sturdy metal door, there's a suspicious looking hexagonal slot on one side." };
+            var third_fourth = new Exit(name: "CORRIDOR", description: "An open corridor.", locked: false, lockedDescription: "", room1: fourthRoom, room2: thirdRoom);
             
             //Exits add to lists of rooms
             firstRoom.listOfExits.Add("EAST", first_second);
             secondRoom.listOfExits.Add("WEST", first_second);
-            secondRoom.listOfExits.Add("EAST", second_end);
+            secondRoom.listOfExits.Add("EAST", second_third);
+            thirdRoom.listOfExits.Add("NORTH", second_third);
+            thirdRoom.listOfExits.Add("WEST", third_end);
+            thirdRoom.listOfExits.Add("SOUTH", third_fourth);
+            fourthRoom.listOfExits.Add("NORTH", third_fourth);
 
-            //Start setup.
-            StartupText();
-            Help();
-            Console.WriteLine("* press any key to continue *");
-            Console.ReadKey();
+            
 
-            currentRoom = firstRoom;
+            currentRoom = thirdRoom;
             currentRoom.DescribeRoom();
 
             while (GameOver == false)

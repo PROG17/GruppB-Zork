@@ -54,8 +54,15 @@ namespace GruppBZork.Entities
                     if (direction == exit.Key)
                     {
                         Room newRoom = exit.Value.GoThrough(this);
-                        newRoom.DescribeRoom();
-                        return newRoom;
+                        if (newRoom == this)
+                        {
+                            return newRoom;
+                        }
+                        else
+                        {
+                            newRoom.DescribeRoom();
+                            return newRoom;
+                        }
                     }
                 }
                 Console.WriteLine("There is no exit in that direction.");

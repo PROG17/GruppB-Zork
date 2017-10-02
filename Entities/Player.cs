@@ -12,12 +12,6 @@ namespace GruppBZork.Entities
         public static Dictionary<string, Item> inventory = new Dictionary<string, Item>();
         public static Dictionary<string, Item> tempInventory = new Dictionary<string, Item>();
 
-        public Player(string name)
-        {
-            Name = name;
-            //Name = Console.ReadLine();            
-        }
-
         public static void ShowInventory()
         {
             if (inventory.Count() == 0)

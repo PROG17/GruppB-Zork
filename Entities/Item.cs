@@ -40,7 +40,9 @@ namespace GruppBZork.Entities
                         {
                             if ((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key)
                             {
-                                Console.WriteLine("You died.");
+                                Console.WriteLine($"{target.Value.UseItemActionDescription}");
+                                Console.WriteLine("You died. \nPress any key to end...");
+                                Console.ReadKey();
                                 Program.EndGame();
                                 return;
                             }
@@ -71,7 +73,9 @@ namespace GruppBZork.Entities
                         {
                             if (actor.Value.UseItemLooseGame && actor.Value.BadMatch == exit.Value.Name.ToUpper())
                             {
-                                Console.WriteLine("You died. \nGame Over");
+                                Console.WriteLine($"{actor.Value.UseItemActionDescription}");
+                                Console.WriteLine("You died. \nPress any key to end...");
+                                Console.ReadKey();
                                 Program.EndGame();
                                 return;
                             }
@@ -85,7 +89,7 @@ namespace GruppBZork.Entities
                                 else
                                 {
                                     Console.WriteLine($"{actor.Value.UseItemActionDescription}");
-                                    Console.WriteLine("You unlock {0}.", exit.Value.Name);
+                                    Console.WriteLine("You unlock {0}.", exit.Value.Name.ToLower());
                                     exit.Value.Locked = false;
                                 }
                                 return;
@@ -109,7 +113,9 @@ namespace GruppBZork.Entities
                         {
                             if (((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key))
                             {
-                                Console.WriteLine("You died.");
+                                Console.WriteLine($"{actor.Value.UseItemActionDescription}");
+                                Console.WriteLine("You died. \nPress any key to end...");
+                                Console.ReadKey();
                                 Program.EndGame();
                                 return;
                             }
@@ -182,6 +188,14 @@ namespace GruppBZork.Entities
                 if (item.Key == command)
                 {
                     Console.WriteLine(item.Value.Details);
+                    return;
+                }
+            }
+            foreach (var exit in currentRoom.listOfExits)
+            {
+                if (exit.Value.Name.ToUpper() == command)
+                {
+                    Console.WriteLine(exit.Value.Details);
                     return;
                 }
             }

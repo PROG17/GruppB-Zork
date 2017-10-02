@@ -12,6 +12,7 @@ namespace GruppBZork.Entities
         public Room Room2 { get; set; }
         public bool Locked;
         public string LockedDescription { get; set; }
+        public string Details { get; set; }
 
         public Exit(string name, string description, bool locked, string lockedDescription, Room room1, Room room2) : base(name, description)
         {
