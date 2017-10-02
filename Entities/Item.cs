@@ -131,6 +131,7 @@ namespace GruppBZork.Entities
                     return;
                 }
             }
+
             Console.WriteLine($"Can't find {secondItem.ToLower()} in the room or your inventory.");
         }
         public static void PickUpItem(string command, Room currentRoom)
