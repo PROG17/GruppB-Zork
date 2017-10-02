@@ -51,7 +51,7 @@ namespace GruppBZork
                 }
                 else
                 {
-                    Console.WriteLine("Write Help for info on how to use the commands.");
+                    Console.WriteLine("Write \"Help\" for info on how to use the commands.");
                 }
             }
             else if (commandList.Count() == 4)
@@ -99,7 +99,7 @@ namespace GruppBZork
             player.Name = Console.ReadLine();
 
             Console.WriteLine($"\nWelcome {player.Name} to the Room Adventure!\n" +
-                "In your hand there is a note that reads; \n\n\"We know that you're afraid, but there is no " +
+                "In your hand there's a note that reads; \n\n\"We know that you're afraid, but there is no " +
                 "time to doubt yourself because \nonly you can save yourself from this place. Defeat every " +
                 "obstacle that comes your way and maybe, \njust maybe you'll get out of here alive... Good Luck!\"");
             Console.WriteLine("\n* press any key to continue *");
@@ -120,16 +120,18 @@ namespace GruppBZork
             Console.ReadKey();
 
             //Room 1
-            Room firstRoom = new Room(name: "First Room", description: "Welcome to the first room");
+            Room firstRoom = new Room(name: "Blue Room", description: "Welcome to the Blueroom, the walls are painted in blue!");
 
             //Room 2
-            Room secondRoom = new Room(name: "First Room", description: "Welcome to the second room");
+            Room secondRoom = new Room(name: "Laser Room", description: "WELCOME TO THE LASER ROOM \nThis room is completely black. Everything is dusty and the air reaks of rotten meat.. " +
+                "\nCountless neon graffiti drawings cover all four walls and hundreds of discoballs hang from the ceiling. " +
+                "\nThe room is also occupied by evil robot penguins who are ready to attack you. So BEWARE! ");
 
             //Room 3 - Enter from North, dead end room to the south and end of the game to the east.
-            Room thirdRoom = new Room(name: "Steamy Room", description: "The room is filled with steaming pipes, levers and valves." + 
+            Room thirdRoom = new Room(name: "Steamy Room", description: "Welcome to the Steam room.\nThe room is filled with steaming pipes, levers and valves." + 
                 "\nThere's a sturdy looking vault door to the west, an open passage to the South and a door to the north.");
 
-            Room fourthRoom = new Room(name: "Tiny storage", description: "It's a small storage area.");
+            Room fourthRoom = new Room(name: "Tiny storage", description: "Welcome to the storage room.\nIt's a small storage area.");
 
             Room endRoom = new Room(name: "End Room", description: $"Freedom! \nYou live for now {player.Name}, good job!") { EndPoint = true };
 
@@ -166,33 +168,101 @@ namespace GruppBZork
             { UseItemActionDescription = "You attach the valve and turn it. When you open the safe you unleash a deadly gas!",
                 Details = "On closer inspection you see a little skull and crossbones on the back of the safe.",
                 UseItemLooseGame = true ,BadMatch = "VALVE"});
-            
-            //Items
-            firstRoom.listOfItems.Add("CORKSCREW", new Item(name: "Corkscrew", description: "This is a corkscrew", canBeTaken: true)
-            {
-                Persistent = true,
-                Match = "BOTTLE",
-                CombinedItemKey = "OPENED BOTTLE",
-                CombinedItem = new Item(name: "Opened bottle",
-                description: "This is a an opened bottle",
-                canBeTaken: true),
-                UseItemActionDescription = "You uncorked the bottle! ;)",
-            });
 
-            firstRoom.listOfItems.Add("BOTTLE", new Item(name: "Bottle", description: "This is a an unopened bottle", canBeTaken: true)
+            // Items
+            firstRoom.listOfItems.Add("COMPUTER", new Item(name: "Computer", description: "Its a desktopcomputer, it has no power", canBeTaken: false)
             {
-                Persistent = false,
-                Match = "CORKSCREW",
-                CombinedItemKey = "OPENED",
-                CombinedItem = new Item(name: "Opened bottle",
-                description: "This is a an opened bottle",
-                canBeTaken: true),
-                UseItemActionDescription = "You uncorked the bottle! ;)",
+                Description = "Its a dell computer and the powercord is missing",
+                Persistent = true,
+                Match = "POWERCORD",
+                CombinedItemKey = "WORKING_COMPUTER",
+                CombinedItem = new Item(name: "COMPUTER2",
+                description: "",
+                canBeTaken: false),
+                UseItemActionDescription = "",
+                UseItemLooseGame=true,            
+
             });
+            firstRoom.listOfItems.Add("POWERCORD", new Item(name: "Powercord", description: "Its a powercord", canBeTaken: true) {  Details = "Its a one meterlong powercord for a computer ", Match = "COMPUTER", BadMatch = "COMPUTER" });
+            firstRoom.listOfItems.Add("SOFA", new Item(name: "Sofa", description: "Its a red threeseated sofa", canBeTaken: false) {  Details = "Its a red, three seated, worndown sofa. Lookes like it has seen its share of tinderdates"});
+           
+
+            firstRoom.listOfItems.Add("HAMMERHEAD", new Item(name: "Hammerhead", description: "Its the head of a hammer", canBeTaken: true) { Details = "Its a big ironhammerhead", Match = "STICK" });
+            firstRoom.listOfItems.Add("STICK", new Item(name: "Stick", description: "Its a wooden stick", canBeTaken: true) {
+                Details = "Its the head too an big ironhammer",
+                Match = "HAMMERHEAD",
+                CombinedItemKey = "HAMMER",
+                CombinedItem = new Item(name: "Hammer",
+                description: "Its an big awesome hammer",
+                canBeTaken: true)
+                {Match="PADLOCK", Persistent=true},
+                UseItemActionDescription = "It was a perfect match, you now have an big, awesome *HAMMER* in your inventory",
+                               
+            });
+            
             firstRoom.listOfItems.Add("KEY", new Item(name: "Key", description: "This is a test KEY", canBeTaken: true) { BadMatch = "DOOR2" });
 
+
+            //Items secondRoom
+
+            secondRoom.listOfItems.Add("LASERGUN", new Item(name: "Lasergun", description: "\nA powerful lasergun that will shoot your " +
+                "opponent down in an instant. \nYou have limited amunition though so use it wisely.\n", canBeTaken: true)
+            {
+                Persistent = true,
+                Match = "MAGASIN",
+                CombinedItemKey = "LOAD",
+                CombinedItem = new Item(name: "Loaded Lasergun",
+                description: "This is a loaded Lasergun",
+                canBeTaken: true),
+                UseItemActionDescription = $"Whooaa, you just went hardcore Rambo and killed loads of the evil robot penguins in the room!! " +
+                $"\nWe can't believe we underestimated you {player.Name}, you are truely awesome! \nBut wait...There's a strange noise coming from the cupboard.\n" +
+                $"Oh no! There are still a few evil robot penguins alive. You need a quick solution to wipe them out",
+
+            });
+
+            secondRoom.listOfItems.Add("MAGASIN", new Item(name: "Magasin", description: "\nLoad your Lasergun with amunition. Trust me, you'll need it!\n", canBeTaken: true)
+            {
+                Persistent = true,
+                Match = "LASERGUN",
+                CombinedItemKey = "LOAD",
+                CombinedItem = new Item(name: "Loaded Lasergun",
+                description: "This is a loaded Lasergun",
+                canBeTaken: true),
+                UseItemActionDescription = $"Whooaa, you just went hardcore Rambo and killed loads of the evil robot penguins in the room!! " +
+                $"\nWe can't believe we underestimated you {player.Name}, you are truely awesome! \nBut wait...There's a strange noise coming from the cupboard.\n" +
+                $"Oh no! There are still a few evil robot penguins alive. You need a quick solution to wipe them out",
+
+            });
+
+            secondRoom.listOfItems.Add("BOMB", new Item(name: "Bomb", description: "\nThis Bomb will definitely wipe out everything living thing \nwithin a perimeter of 50 feet. " +
+                "The bomb is poorly made with acid liquid running down from the sides. \nSo be very careful, skin contact may be fatal.\n", canBeTaken: true)
+            {
+                Persistent = false,
+                Match = "CAN",
+                CombinedItemKey = "THROW",
+                CombinedItem = new Item(name: "A bomb contained in a can",
+                description: "A bomb contained in a can",
+                canBeTaken: true),
+                UseItemActionDescription = $"\"B O O O M!!!\" \nYou threw the bomb and killed a bunch of evil robot penguins! Good job {player.Name}!",
+            });
+
+            secondRoom.listOfItems.Add("CAN", new Item(name: "Can", description: "\nAn empty can. Big enough to store items and light enough to throw.", canBeTaken: true)
+            {
+                Persistent = false,
+                Match = "BOMB",
+                CombinedItemKey = "THROW",
+                CombinedItem = new Item(name: "A bomb contained in a can",
+                description: "A bomb contained in a can",
+                canBeTaken: true),
+                UseItemActionDescription = $"\"B O O O M!!!\" \nYou threw the bomb and killed a bunch of evil robot penguins! Good job {player.Name}!",
+            });
+
+
+
             //Initialize Exits
-            var first_second = new Exit(name: "DOOR", description: "Dörr mellan red och blue", locked: false, lockedDescription: "LOCKED!", room1: firstRoom, room2: secondRoom);
+            var first_second = new Exit(name: "PADLOCK", description: "Its a stealdoor", locked: true, lockedDescription: "The door is locked with a padlock! ", room1: firstRoom, room2: secondRoom);
+            //var second_first = new Exit(name: "DOOR2", description: "Door between Laser Room and firstRoom", locked: false, lockedDescription: "LOCKED!", room1: secondRoom, room2: firstRoom);
+            var second_third = new Exit(name: "DOOR3", description: "Door between Laser Room and thirdRoom", locked: false, lockedDescription: "LOCKED!", room1: secondRoom, room2: thirdRoom);
             var second_third = new Exit(name: "DOOR2", description: "Dörr mellan blue och end", locked: false, lockedDescription: "LOCKED!", room1: endRoom, room2: secondRoom);
             var third_end = new Exit(name: "VAULT", description: "A large Vault door.", locked: true, lockedDescription: "It won't even budge.", room1: endRoom, room2: thirdRoom) { Details = "It's a very sturdy metal door, there's a suspicious looking hexagonal slot on one side." };
             var third_fourth = new Exit(name: "CORRIDOR", description: "An open corridor.", locked: false, lockedDescription: "", room1: fourthRoom, room2: thirdRoom);
@@ -200,7 +270,7 @@ namespace GruppBZork
             //Exits add to lists of rooms
             firstRoom.listOfExits.Add("EAST", first_second);
             secondRoom.listOfExits.Add("WEST", first_second);
-            secondRoom.listOfExits.Add("EAST", second_third);
+            secondRoom.listOfExits.Add("NORTH", second_third);
             thirdRoom.listOfExits.Add("NORTH", second_third);
             thirdRoom.listOfExits.Add("WEST", third_end);
             thirdRoom.listOfExits.Add("SOUTH", third_fourth);
@@ -208,7 +278,15 @@ namespace GruppBZork
 
             
 
-            currentRoom = thirdRoom;
+
+
+            //Start setup.
+            StartupText();
+            Help();
+            Console.WriteLine("* press any key to continue *");
+            Console.ReadKey();
+
+            currentRoom = firstRoom;
             currentRoom.DescribeRoom();
 
             while (GameOver == false)

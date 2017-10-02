@@ -15,7 +15,7 @@ namespace GruppBZork.Entities
         public string BadMatch { get; set; }
         public bool UseItemLooseGame { get; set; }
 
-        public string CombinedItemKey { get; set; }
+        public string CombinedItemKey { get; set; } 
         public Item CombinedItem { get; set; }
         public bool Persistent { get; set; }
 
@@ -40,9 +40,17 @@ namespace GruppBZork.Entities
                         {
                             if ((actor.Value.UseItemLooseGame || target.Value.UseItemLooseGame) && actor.Value.BadMatch == target.Key)
                             {
-                                Console.WriteLine($"{target.Value.UseItemActionDescription}");
-                                Console.WriteLine("You died. \nPress any key to end...");
-                                Console.ReadKey();
+                                if (target.Key == "COMPUTER")
+                                {
+                                Console.WriteLine("It was a trap the computer exploded in your face! GAME OVER "); Console.ReadLine(); 
+                                Console.WriteLine("You died.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{target.Value.UseItemActionDescription}");
+                                    Console.WriteLine("You died. \nPress any key to end...");
+                                    Console.ReadKey();
+                                }
                                 Program.EndGame();
                                 return;
                             }
@@ -135,6 +143,7 @@ namespace GruppBZork.Entities
                     return;
                 }
             }
+
             Console.WriteLine($"Can't find {secondItem.ToLower()} in the room or your inventory.");
         }
         public static void PickUpItem(string command, Room currentRoom)
