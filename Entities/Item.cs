@@ -15,7 +15,7 @@ namespace GruppBZork.Entities
         public string BadMatch { get; set; }
         public bool UseItemLooseGame { get; set; }
 
-        public string CombinedItemKey { get; set; }
+        public string CombinedItemKey { get; set; } 
         public Item CombinedItem { get; set; }
         public bool Persistent { get; set; }
 
